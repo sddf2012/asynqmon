@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"flag"
 	"fmt"
+	"github.com/hibiken/asynqmon"
 	"log"
 	"net/http"
 	"os"
@@ -14,7 +15,6 @@ import (
 
 	"github.com/hibiken/asynq"
 	"github.com/hibiken/asynq/x/metrics"
-	"github.com/hibiken/asynqmon"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/cors"
