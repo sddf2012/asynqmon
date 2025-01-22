@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 	"flag"
 	"fmt"
-	"github.com/hibiken/asynqmon"
+	"github.com/sddf2012/asynqmon"
 	"log"
 	"net/http"
 	"os"
@@ -132,21 +132,31 @@ func makeRedisConnOpt(cfg *Config) (asynq.RedisConnOpt, error) {
 }
 
 func main() {
-	cfg, output, err := parseFlags(os.Args[0], os.Args[1:])
-	if err == flag.ErrHelp {
-		fmt.Println(output)
-		os.Exit(2)
-	} else if err != nil {
-		fmt.Printf("error: %v\n", err)
-		fmt.Println(output)
-		os.Exit(1)
+	cfg := &Config{
+		RedisAddr: "10.50.21.235:6379",
+		RedisDB:   25,
+
+		// Default values
+		Port:                  8000,
+		RedisPassword:         "2345",
+		RedisTLS:              "",
+		RedisURL:              "",
+		RedisInsecureTLS:      false,
+		RedisClusterNodes:     "",
+		MaxPayloadLength:      200,
+		MaxResultLength:       200,
+		EnableMetricsExporter: false,
+		PrometheusServerAddr:  "",
+		ReadOnly:              false,
+
+		Args: []string{},
 	}
 
-	redisConnOpt, err := makeRedisConnOpt(cfg)
-	if err != nil {
-		log.Fatal(err)
+	redisConnOpt := asynq.RedisClientOpt{
+		Addr:     "10.50.21.235:6379",
+		Password: "2345",
+		DB:       25,
 	}
-
 	h := asynqmon.New(asynqmon.Options{
 		RedisConnOpt:      redisConnOpt,
 		PayloadFormatter:  asynqmon.PayloadFormatterFunc(payloadFormatterFunc(cfg)),
