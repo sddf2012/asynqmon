@@ -132,7 +132,21 @@ func makeRedisConnOpt(cfg *Config) (asynq.RedisConnOpt, error) {
 }
 
 func main() {
-	cfg := &Config{
+	cfg, output, err := parseFlags(os.Args[0], os.Args[1:])
+	if err == flag.ErrHelp {
+		fmt.Println(output)
+		os.Exit(2)
+	} else if err != nil {
+		fmt.Printf("error: %v\n", err)
+		fmt.Println(output)
+		os.Exit(1)
+	}
+
+	redisConnOpt, err := makeRedisConnOpt(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	/*cfg := &Config{
 		RedisAddr: "10.50.21.235:6379",
 		RedisDB:   25,
 
@@ -156,7 +170,7 @@ func main() {
 		Addr:     "10.50.21.235:6379",
 		Password: "2345",
 		DB:       25,
-	}
+	}*/
 	h := asynqmon.New(asynqmon.Options{
 		RedisConnOpt:      redisConnOpt,
 		PayloadFormatter:  asynqmon.PayloadFormatterFunc(payloadFormatterFunc(cfg)),
