@@ -30,10 +30,7 @@ type uiAssetsHandler struct {
 // serve the file specified by the URL path.
 func (h *uiAssetsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Get the absolute p to prevent directory traversal.
-	p := r.URL.Path
-	if filepath.IsAbs(p) {
-		p = h.indexFilePath()
-	}
+	p := filepath.ToSlash(filepath.Clean(r.URL.Path))
 
 	// Get the path relative to the root path.
 	if !strings.HasPrefix(p, h.rootPath) {
